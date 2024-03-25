@@ -1,0 +1,43 @@
+body {
+    height: 100vh; /* Définit la hauteur du body à 100% de la fenêtre */
+    display: flex;
+    justify-content: center; /* Centre horizontalement */
+    align-items: center; /* Centre verticalement */
+}
+.formulaire {
+    border: 1px solid;
+    padding: 20px; 
+    width : 50%;
+}
+
+.formulaire div {
+    display: flex; 
+    align-items: center;
+    margin-bottom: 10px; 
+}
+
+.formulaire label {
+    width: 140px; 
+}
+
+.formulaire input {
+    width: calc(100% - 40px); /* La largeur du champ de saisie est calculée pour occuper tout l'espace restant après la largeur de l'étiquette */
+    height: 30px;
+}
+.btn
+{
+    margin-bottom: 20px;
+    display : flex;
+    justify-content: center;
+}
+button
+{
+    color : white;
+    width : 100px;
+    height : 30px;
+    background-color: rgb(121, 121, 212); 
+    color: white; 
+    border: none; 
+    cursor: pointer;
+    border-radius: 5px; 
+}
