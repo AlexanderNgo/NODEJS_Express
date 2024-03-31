@@ -35,46 +35,59 @@
             </div>
             <div class = "btn">
                 <button type="button" class="delete-btn">Delete</button>
-                <button type = "submit">Submit</button>
-                <button type = "submit" id = "update-form">Update</button>
+                <button type = "submit" data-action="post">Submit</button>
+                <button type = "submit" id = "update-form" data-action="put">Update</button>
             </div>
             <!--Faire un bouton avec un <a href > qui dirige vers la page /books/read-->
         </form>
     </div>
     <script>
-        document.getElementById('form').addEventListener('submit', function(event) {
-            // Empêche le comportement par défaut de redirection de la page
-            event.preventDefault();
-    
-            // Récupère les données du formulaire
-            const formData = new FormData(this);
-    
-            // Convertit les données en objet JSON
-            const jsonData = {};
-            formData.forEach((value, key) => {
-                jsonData[key] = value;
-            });
-    
-            // Envoyer les données au format JSON via une requête AJAX
-            fetch('/books', {
-                method: 'POST',
+    document.getElementById('form').addEventListener('submit', function(event) {
+    event.preventDefault();
+    const formData = new FormData(this);
+    const action = event.submitter.getAttribute('data-action'); // Récupère l'action à partir de l'attribut personnalisé
+
+    // Détermine quelle action doit être effectuée en fonction de la valeur de l'attribut personnalisé
+    switch (action) {
+        case 'post':
+            fetch("/books", {
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json' // Définit le type de contenu comme JSON
+                    'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(jsonData) // Convertit l'objet JSON en chaîne JSON
-            })
-            .then(response => {
+                body: JSON.stringify(Object.fromEntries(formData.entries())) // Convertit FormData en objet JSON
+            }).then(response => {
                 if (!response.ok) {
-                    throw new Error('Erreur lors de la soumission du formulaire.');
+                    throw new Error("Erreur lors de l'envoi du formulaire.");
                 }
-                // Traitez la réponse si nécessaire
-                console.log('Formulaire soumis avec succès !');
-                alert("Données envoyés");
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
+                console.log("Formulaire soumis avec succès !");
+                alert("Données envoyées");
+            }).catch(error => {
+                console.error("Erreur :", error);
             });
-        });
+            break;
+        case 'put':
+            fetch("/books/update", {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(Object.fromEntries(formData.entries())) // Convertit FormData en objet JSON
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error("Erreur lors de la mise à jour.");
+                }
+                console.log("Mise à jour réussie !");
+                alert("Mise à jour effectuée !");
+            }).catch(error => {
+                console.error("Erreur :", error);
+            });
+            break;
+        default:
+            console.error("Action non prise en charge :", action);
+    }
+});
+
     document.addEventListener('DOMContentLoaded', function() {
     const deleteButtons = document.querySelectorAll('.delete-btn');
     deleteButtons.forEach(function(button) {
@@ -113,7 +126,7 @@
     });
 });
     
-    document.getElementById('form').addEventListener("submit", function(event) {
+    /*document.getElementById('form').addEventListener("submit", function(event) {
     event.preventDefault();
     const formData = new FormData(this); // Récupère les données du formulaire
 
@@ -130,7 +143,7 @@
         console.error("Erreur : ", error);
         alert('Une erreur est survenue lors de la MAJ.');
     });
-});
+});*/
 
 
 //RESTE LA PARTE SUR LE UPDATE , FONCTIONNER COMME UN POST
