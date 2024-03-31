@@ -79,12 +79,26 @@ router.post('/books/delete',(req,res)=>{
 })
 
 router.put('/books/update',(req,res)=>{
-    console.log("DANS UPDATE");
-    console.log(typeof(req.body));
-    for(i in req.body)
-    {
-        console.log(req.body[i]);
+    //console.log("DANS UPDATE");
+    //console.log(typeof(req.body));
+    var ISBN = req.body.ISBN; // Supposons que la clé ISBN est directement dans req.body
+    var dedans = false;
+    
+    books.forEach((book, index) => {
+        if (book.ISBN === ISBN) {
+            dedans = true;
+            books[index] = req.body; // Remplacer le livre existant par les nouvelles données
+            return; // Sortir de la boucle forEach une fois le livre trouvé et mis à jour
+        }
+    });
+    
+    if (dedans) {
+        console.log("ISBN trouvé et mis à jour dans books !");
+        console.log(req.body);
+    } else {
+        console.log("ISBN non trouvé dans books !");
     }
+    
     res.sendStatus(201);
 })
 // Exporter le routeur
