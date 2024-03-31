@@ -102,52 +102,39 @@
                 }
             });
             if (display) {
-                console.log("DISPLAY");
-                const formData = new FormData(document.getElementById('form'));
-                // Récupérer la valeur de l'ISBN
-                const isbnValue = formData.get('ISBN');
-                console.log('ISBN:', isbnValue);
-                // Envoyer la requête fetch
-                fetch('/books/delete', {
-                    method: 'POST',
-                    body: formData // Ajouter le FormData à la requête
-                }).then(response => {
-                    if (!response.ok) {
-                        throw new Error('Erreur lors de la suppression.');
-                    }
-                    console.log('Suppression réussie !');
-                    alert('Suppression réussie !');
-                }).catch(error => {
-                    console.error('Erreur:', error);
-                    alert('Une erreur est survenue lors de la suppression.');
-                });
+        console.log("DISPLAY");
+        const formData = new FormData(document.getElementById('form'));
+        // Récupérer la valeur de l'ISBN
+        const isbnValue = formData.get('ISBN');
+        console.log('ISBN:', isbnValue);
+        
+        // Créer un objet JSON avec les données du formulaire
+        const formDataJSON = Object.fromEntries(formData.entries());
+        // Ajouter la valeur de l'ISBN à l'objet JSON
+        formDataJSON.ISBN = isbnValue;
+
+        // Envoyer la requête fetch avec l'objet JSON
+        fetch('/books/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json' // Définit le type de contenu comme JSON
+            },
+            body: JSON.stringify(formDataJSON) // Convertit l'objet JSON en chaîne JSON
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors de la suppression.');
             }
+            console.log('Suppression réussie !');
+            alert('Suppression réussie !');
+        }).catch(error => {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors de la suppression.');
+        });
+    }
+
         });
     });
 });
-    
-    /*document.getElementById('form').addEventListener("submit", function(event) {
-    event.preventDefault();
-    const formData = new FormData(this); // Récupère les données du formulaire
-
-    fetch("/books/update", {
-        method: "PUT", 
-        body: formData // Ajoute les données du formulaire au corps de la requête
-    }).then(response => {
-        if (!response.ok) {
-            throw new Error("Erreur lors de la MAJ");
-        }
-        console.log("MAJ REUSSI");
-        alert("Mise a jour effectué !");
-    }).catch(error => {
-        console.error("Erreur : ", error);
-        alert('Une erreur est survenue lors de la MAJ.');
-    });
-});*/
-
-
-//RESTE LA PARTE SUR LE UPDATE , FONCTIONNER COMME UN POST
-
     </script>
     
 </body>
