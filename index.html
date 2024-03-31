@@ -8,35 +8,134 @@
 </head>
 <body>
     <div class = "formulaire">
-        <form method="post" action = "/books">
+        <form method="post" action = "/books" id = "form"  enctype="multipart/form-data">
             <div>
-                <label for = "ISBN">ISBN : </label>
+                <label for = "ISBN" class = "isbn">ISBN : </label>
                 <input type = "text" id = "ISBN" name = "ISBN">
             </div>
-            <div>
+            <div class = "deleted">
                 <label for = "title">Title : </label>
                 <input type = "text" id = "title" name = "title">
             </div>
-            <div>
+            <div class = "deleted">
                 <label for = "Author">Author : </label>
                 <input type = "text" id = "Author" name = "Author">
             </div>
-            <div>
-                <label for = "Published date">Published Date : </label>
-                <input type = "text" id = "Published date" name = "Published date">
+            <div class = "deleted">
+                <label for = "Publisheddate">Published Date : </label>
+                <input type = "text" id = "Publisheddate" name = "Publisheddate">
             </div>
-            <div>
+            <div class = "deleted">
                 <label for = "Publisher">Publisher : </label>
                 <input type = "text" id = "Publisher" name = "Publisher">
             </div>
-            <div>
+            <div class = "deleted">
                 <label for = "NbPages">number Of Pages : </label>
                 <input type = "text" id = "NbPages" name = "NbPages">
             </div>
             <div class = "btn">
-                <button type = "submit">Soumettre</button>
+                <button type="button" class="delete-btn">Delete</button>
+                <button type = "submit">Submit</button>
+                <button type = "submit" id = "update-form">Update</button>
             </div>
+            <!--Faire un bouton avec un <a href > qui dirige vers la page /books/read-->
         </form>
     </div>
+    <script>
+        document.getElementById('form').addEventListener('submit', function(event) {
+            // Empêche le comportement par défaut de redirection de la page
+            event.preventDefault();
+    
+            // Récupère les données du formulaire
+            const formData = new FormData(this);
+    
+            // Convertit les données en objet JSON
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+    
+            // Envoyer les données au format JSON via une requête AJAX
+            fetch('/books', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json' // Définit le type de contenu comme JSON
+                },
+                body: JSON.stringify(jsonData) // Convertit l'objet JSON en chaîne JSON
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la soumission du formulaire.');
+                }
+                // Traitez la réponse si nécessaire
+                console.log('Formulaire soumis avec succès !');
+                alert("Données envoyés");
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+            });
+        });
+    document.addEventListener('DOMContentLoaded', function() {
+    const deleteButtons = document.querySelectorAll('.delete-btn');
+    deleteButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            var display = true;
+            const deletedElements = document.querySelectorAll('.deleted');
+            deletedElements.forEach(function(element) {
+                element.style.display = (element.style.display === 'none') ? 'flex' : 'none';
+                if (element.style.display == 'none') {
+                    display = false
+                }
+            });
+            if (display) {
+                console.log("DISPLAY");
+                const formData = new FormData(document.getElementById('form'));
+                // Récupérer la valeur de l'ISBN
+                const isbnValue = formData.get('ISBN');
+                console.log('ISBN:', isbnValue);
+                // Envoyer la requête fetch
+                fetch('/books/delete', {
+                    method: 'POST',
+                    body: formData // Ajouter le FormData à la requête
+                }).then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erreur lors de la suppression.');
+                    }
+                    console.log('Suppression réussie !');
+                    alert('Suppression réussie !');
+                }).catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue lors de la suppression.');
+                });
+            }
+        });
+    });
+});
+    
+    document.getElementById('form').addEventListener("submit", function(event) {
+    event.preventDefault();
+    const formData = new FormData(this); // Récupère les données du formulaire
+
+    fetch("/books/update", {
+        method: "PUT", 
+        body: formData // Ajoute les données du formulaire au corps de la requête
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error("Erreur lors de la MAJ");
+        }
+        console.log("MAJ REUSSI");
+        alert("Mise a jour effectué !");
+    }).catch(error => {
+        console.error("Erreur : ", error);
+        alert('Une erreur est survenue lors de la MAJ.');
+    });
+});
+
+
+//RESTE LA PARTE SUR LE UPDATE , FONCTIONNER COMME UN POST
+
+    </script>
+    
 </body>
 </html>
