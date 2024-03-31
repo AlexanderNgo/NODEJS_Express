@@ -70,14 +70,36 @@ router.post('/books', (req, res) => {
     res.sendStatus(201); // Répondre avec le code 201 (Created)
     console.log(req.body);
 });
-//pour supprimer
+
+//pour DELETE
 router.post('/books/delete',(req,res)=>{
     console.log("DANS DELETE");
-    console.log(req.body); // TO DO PROBLEM ICI CAR JE RECOIS PAS LES INFORMATIONS DU CHAMPS ISBN
-    //A TRAITER = REGARDER LE ISBN A SUPPRIMER DANS BOOKS 
+    //console.log(req.body);
+    var ISBN = req.body.ISBN;
+    console.log("ISBN a supprimer : "+ISBN);
+    var dedans = false;
+    books.forEach((book, index) => {
+        if (book.ISBN === ISBN) {
+            dedans = true;
+            books.splice(index,1); // Supprimer l'élément à l'indice index et 1 = le nb d'élément à supp
+            return; // Sortir de la boucle forEach une fois le livre trouvé et mis à jour
+        }
+    });
+    if(dedans)
+    {
+        console.log("Book deleted");
+        //alert("Le livre a ete supprime !");
+        console.log(books);
+    }
+    else
+    {
+        console.log("Le livre n'existait pas");
+        //alert("Le live n'existait pas ! ");
+    }
     res.sendStatus(201);
 })
 
+//pour UPDATE
 router.put('/books/update',(req,res)=>{
     //console.log("DANS UPDATE");
     //console.log(typeof(req.body));
